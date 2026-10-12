@@ -22,6 +22,7 @@ test_data/        # revisit when setting up CI
 failed.txt        # download script log
 
 # --- Python / R / editors / OS ---
+.vscode/
 __pycache__/
 *.pyc
 .venv/
