@@ -1,0 +1,5 @@
+fastq,condition,sample
+fastq/SRR1012917.fastq.gz,E2,e2_0
+fastq/SRR1012919.fastq.gz,E2,e2_1
+fastq/SRR1012934.fastq.gz,Control,ctrl_0
+fastq/SRR1012937.fastq.gz,Control,ctrl_1
