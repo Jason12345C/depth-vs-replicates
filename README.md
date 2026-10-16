@@ -18,7 +18,7 @@ Figure 1: PCA plot (left) shows E2 treatment group and control group are well se
     <img src="figures/power_vs_reads.png" width="49%" />
   <img src="figures/power_curve.png" width="49%" />
 </p>
-Figure 2: - Left shows power versus total reads for replicate counts 2-7 (&plusmn;1 s.d). With replicate = 7, there is no variation as there is only one draw. For the same total number reads, having additional replicates always results in more power within the range of replicates and depths tested. Right shows power versus depth for replicate counts 2-7 (s.&plusmn;1 s.d). Increasing depth leads to diminishing returns for all 7 replicates. Increasing replicates always results in more power regardless of depth.
+Figure 2: Left shows power versus total reads for replicate counts 2-7 (&plusmn;1 s.d). With replicate = 7, there is no variation as there is only one draw. For the same total number reads, having additional replicates always results in more power within the range of replicates and depths tested. Right shows power versus depth for replicate counts 2-7 (s.&plusmn;1 s.d). Increasing depth leads to diminishing returns for all 7 replicates. Increasing replicates always results in more power regardless of depth.
 
 <img src="figures/roc_by_replicates.png" />
 Figure 3: Receiver Operating Characteristic (ROC) curves for all replicate counts. True positive rate increases while false positive rate decreases as more replicates are added.
