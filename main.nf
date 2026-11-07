@@ -1,35 +1,29 @@
 // MCF7 ± estradiol: more replicates or deeper sequencing?
 // QC each lane, merge lanes per sample, subsample to several depths, quantify with kallisto.
-// Tuple convention everywhere: (sample, fastq, depth)
 
-params.samplesheet = 'sample_sheets/samplesheet_all.csv'
-params.index       = 'ref/ensembl_r116.idx'
-params.depths = [2500000, 5000000, 10000000, 15000000, 20000000, 25000000]
-params.outdir      = 'results'
-
-// Single-end reads: kallisto needs the fragment length distribution
-params.frag_len    = 200
-params.frag_sd     = 20
+params {
+    samplesheet: Path
+    index: Path
+    depths: List<Integer>
+    outdir: Path
+    frag_len: Integer
+    frag_sd: Integer
+}
 
 process FASTQC {
-    tag "${fq.simpleName}"                       // e.g. SRR1012917
-    publishDir "${params.outdir}/fastqc", mode: 'copy'
-
     input:
-    tuple val(sample), path(fq)
+    tuple val(sample), path(input_fastq)
 
     output:
-    path "*_fastqc.{zip,html}"                   // glob: both files FastQC writes
+    path "*_fastqc.{zip,html}", emit: fastqc_reports  // glob: both files FastQC writes
 
     script:
     """
-    fastqc -t ${task.cpus} -q --outdir . ${fq}
+    fastqc -t ${task.cpus} -q --outdir . ${input_fastq}
     """
 }
 
 process MERGE_LANES {
-    tag "${sample}"
-
     input:
     tuple val(sample), path(fastqs)
 
@@ -43,8 +37,6 @@ process MERGE_LANES {
 }
 
 process SUBSAMPLE {
-    tag "${sample}_${depth}"
-
     input:
     tuple val(sample), path(fq), val(depth)
 
@@ -58,9 +50,6 @@ process SUBSAMPLE {
 }
 
 process KALLISTO_QUANT {
-    tag "${sample}_${depth}"
-    publishDir "${params.outdir}/kallisto", mode: 'copy'
-
     input:
     tuple val(sample), path(fq), val(depth)
     path index
@@ -78,14 +67,12 @@ process KALLISTO_QUANT {
 }
 
 process MULTIQC {
-    publishDir "${params.outdir}/multiqc", mode: 'copy'
-
     input:
     path reports                                 // a list of every report file
 
     output:
-    path "multiqc_report.html"
-    path "multiqc_data"
+    path "multiqc_report.html", emit: html
+    path "multiqc_data", emit: data
 
     script:
     """
@@ -94,6 +81,8 @@ process MULTIQC {
 }
 
 workflow {
+
+    main:
     // One item per run (lane): (sample, fastq)
     runs = channel.fromPath(params.samplesheet)
         .splitCsv(header: true)
@@ -112,5 +101,31 @@ workflow {
     KALLISTO_QUANT(subsampled.mix(full), file(params.index))
 
     // One MultiQC report over all FastQC reports + kallisto logs
-    MULTIQC( FASTQC.out.mix(KALLISTO_QUANT.out.log).collect() )
+    all_reports = FASTQC.out.fastqc_reports.mix(KALLISTO_QUANT.out.log)
+    MULTIQC( all_reports.collect() )
+
+    publish:
+    fastqc_reports = FASTQC.out.fastqc_reports
+    multiqc_data = MULTIQC.out.data
+    multiqc_html = MULTIQC.out.html
+    kallisto_quant = KALLISTO_QUANT.out.quant
+    kallisto_log = KALLISTO_QUANT.out.log
+}
+
+output {
+    fastqc_reports {
+        path 'fastqc'
+    }
+    multiqc_data {
+        path 'multiqc'
+    }
+    multiqc_html{
+        path 'multiqc'
+    }
+    kallisto_quant {
+        path 'kallisto'
+    }
+    kallisto_log {
+        path 'kallisto'
+    }
 }
