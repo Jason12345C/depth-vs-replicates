@@ -1,8 +1,10 @@
-rm(list=ls())
-library(future.apply)
-library(progressr)
-handlers("progress")
-options(progressr.enable = TRUE)
+#!/usr/bin/env Rscript
+#compare total DE genes vs. truth set for varying depths
+#Usage:
+
+all_args <- commandArgs(trailingOnly = False)
+script_dir <- dirname(sub("--file=", "", all_args[grep("--file=", all_args)]))
+source(file.path(script_dir, "common.R"))
 
 source("R/common.R")
 
@@ -11,7 +13,7 @@ e2_ids   <- coldata$sample[coldata$condition == "E2"]
 
 getSamples <- function(n_replicates, seed) {
   set.seed(seed)
-  return (c(sample(ctrl_ids, n_replicates), sample(e2_ids, n_replicates)))
+  c(sample(ctrl_ids, n_replicates), sample(e2_ids, n_replicates))
 }
 
 dds_truth <- getDESeq("25M", coldata$sample)

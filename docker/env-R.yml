@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base
+  - bioconductor-deseq2
+  - bioconductor-tximport
+  - bioconductor-apeglm
+  - r-optparse
+  - procps-ng
