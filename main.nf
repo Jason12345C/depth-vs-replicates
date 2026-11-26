@@ -40,10 +40,18 @@ workflow {
 )
     rows = samplesheet.splitCsv(header: true)
 
-    // Only what the download step needs: strings, not files
-    to_download = rows.map { r -> tuple(r.sample, r.run_accession, r.url, r.fastq_md5) }
+    split = rows.branch { r ->
+        local:  file("fastq/${r.run_accession}.fastq.gz").exists()
+        remote: true                                  // everything else
+    }
 
-    fastqs = DOWNLOAD_FASTQ(to_download)      // emits (sample, fastq)
+    local_fastqs = split.local
+        .map { r -> tuple(r.sample, file("fastq/${r.run_accession}.fastq.gz")) }
+
+    downloaded = DOWNLOAD_FASTQ(
+        split.remote.map { r -> tuple(r.sample, r.run_accession, r.url, r.fastq_md5) })
+
+    fastqs = local_fastqs.mix(downloaded)            // (sample, fastq) either way
 
     FASTQC(fastqs)                            // QC the files that actually exist
 

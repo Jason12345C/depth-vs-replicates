@@ -1,6 +1,6 @@
 process TX2GENE {
     label 'r'
-
+    
     input:
     path cdna
     path ncrna

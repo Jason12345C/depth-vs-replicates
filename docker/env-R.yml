@@ -3,8 +3,8 @@ channels:
   - bioconda
 dependencies:
   - r-base
-  - bioconductor-deseq2
-  - bioconductor-tximport
-  - bioconductor-apeglm
+  - bioconductor-deseq2=1.50.2
+  - bioconductor-tximport=1.38.2
+  - bioconductor-apeglm=1.32.0
   - r-optparse
   - procps-ng
