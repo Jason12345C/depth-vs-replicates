@@ -11,6 +11,6 @@ process RUN_ROC {
 
     script:
     """
-    run_roc.R . ${truth} ${negatives}
+    run_roc.R ${truth} ${negatives} .
     """
 }

@@ -1,9 +1,10 @@
 #!/usr/bin/env Rscript
+
 #compare total DE genes vs. truth set for varying depths
 #Usage: power_analysis.R -mode truth <samplesheet.csv> <tx2gene>
 #Usage: power_analysis.R -mode job <samplesheet.csv> <tx2gene> <draw> <n> <truth.txt> <negatives.txt>
 #Usage: power_analysis.R -mode combine <truth.txt> <negatives.txt>
-
+suppressMessages({library(rhdf5)})
 all_args <- commandArgs(trailingOnly = FALSE)
 script_dir <- dirname(sub("--file=", "", all_args[grep("--file=", all_args)]))
 source(file.path(script_dir, "common.R"))

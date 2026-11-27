@@ -18,6 +18,14 @@ coldata <- load_coldata(args[1])
 tx2gene <- read.csv(args[2])
 symbols <- unique(tx2gene[, c("GENEID", "SYMBOL")])
 
+depths <- c("2.5M" = "2500000",
+            "5M"   = "5000000",
+            "10M"  = "10000000",
+            "15M"  = "15000000",
+            "20M"  = "20000000",
+            "25M"  = "25000000",
+            "full" = "full")
+            
 # Fit and test
 dds_full <- getDESeq("full", coldata$sample, coldata, tx2gene)
 res_full <- results(dds_full, name = "condition_E2_vs_Control", alpha = 0.05)

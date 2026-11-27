@@ -7,22 +7,22 @@ args <- commandArgs(trailingOnly = TRUE)
 if (length(args) < 3)
   stop("usage: run_roc.R <path/to/padj>")
 
-path_to_padj <- args[1]
-truth_path <- args[2]
-negatives_path <- args[3]
+truth_path <- args[1]
+negatives_path <- args[2]
+path_to_padj <- args[3]
 
 truth <- readLines(truth_path)
 negatives <- readLines(negatives_path)
 
 
 thresholds <- 10^seq(-6, 0, length.out = 40)
-files <- list.files(path_to_padj, full.names = TRUE)
+files <- list.files(path_to_padj, pattern = "\\.rds$", full.names = TRUE)
 
 roc_rows <- list()
 for (f in files) {
-padj  <- readRDS(f)
-parts <- strsplit(sub("\\.rds$", "", basename(f)), "_")[[1]]   # e.g. "draw05" "n3" "10M"
-for (t in thresholds) {
+  padj  <- readRDS(f)
+  parts <- strsplit(sub("\\.rds$", "", basename(f)), "_")[[1]]   # e.g. "draw05" "n3" "10M"
+  for (t in thresholds) {
     called <- names(padj)[which(padj < t)]
     roc_rows[[length(roc_rows) + 1]] <- data.frame(
     draw  = as.integer(sub("draw", "", parts[1])),
@@ -31,7 +31,7 @@ for (t in thresholds) {
     threshold = t,
     tpr = length(intersect(called, truth))     / length(truth),
     fpr = length(intersect(called, negatives)) / length(negatives))
-}
+  }
 }
 roc <- do.call(rbind, roc_rows)
 write.csv(roc, "roc_runs.csv", row.names = FALSE)

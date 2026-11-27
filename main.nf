@@ -116,8 +116,9 @@ workflow {
     de_genes = DE_FULL.out.de_genes
     truth = RUN_TRUTH.out.truth
     negatives =  RUN_TRUTH.out.negatives
+    power_runs = power_runs
     roc = RUN_ROC.out.roc
-    power_runs = RUN_JOB.out.table
+
     }
 
 output {

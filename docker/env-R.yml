@@ -6,5 +6,8 @@ dependencies:
   - bioconductor-deseq2=1.50.2
   - bioconductor-tximport=1.38.2
   - bioconductor-apeglm=1.32.0
+  - r-ggplot2=4.0.3
+  - r-ggrepel=0.9.8
+  - bioconductor-rhdf5=2.54.1
   - r-optparse
   - procps-ng
